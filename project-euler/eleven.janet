@@ -1,38 +1,41 @@
-(defn rotate-grid [grid]
-	(print "rotating grid")
-	(var rotated-grid (array/new-filled 20 (array/new-filled 20 " ")))
-	(loop [x :range [0 20]]
-		(loop [y :range [0 20]]
-			(put (rotated-grid x) y ((grid y) x))))
-	rotated-grid)
 
-(defn get-max-of-lines [grid]
-	# (pp grid)
-	(var sums @[])
-	(loop [line :in grid]
-		(loop [a :range [0 (- (length line) 4)]]
-			(var acc 0)
-			# (print (line a))
-			(+ acc (line a))
-			(+ acc (line (inc a)))
-			(+ acc (line (inc (inc a))))
-			(+ acc (line (inc (inc (inc a)))))
-			(array/push sums acc))))
+(defn get-lines-of-size [grid]
+	(def gw-max (length grid))
+	(def sums @[])
+	(loop [yidx :range [0 gw-max]]
+		(loop [xidx :range [0 gw-max]]
+			(do
+				(def hline @[])
+				(def vline @[])
+				(def pdline @[])
+				(def ndline @[])
+				(loop [dinc :range [0 4]]
+					(do
+						(if (< (+ dinc yidx) gw-max)
+							(array/push hline ((grid (+ dinc yidx)) xidx)))
+						(if (< (+ dinc xidx) gw-max)
+							(array/push vline ((grid yidx) (+ dinc xidx))))
+						
+						(var valid-diag-pos (and (< (+ dinc yidx) gw-max) (< (+ dinc xidx) gw-max)))
+						(if valid-diag-pos
+							(array/push pdline ((grid (+ dinc yidx)) (+ dinc xidx))))
 
-(defn get-diagonal-lines [grid]
-	(var diagonal-lines @[])
-	(loop [index :range [0 16]]
-		(var line-x @[])
-		(var line-y @[])
-		(var x-index 0)
-		(var y-index 17)
-		(loop [:while [> y-index 0]]
-			(array/push line-y ((grid y-index) index)))
-		(loop [:while [< x-index 16]]
-			(array/push line-x ((grid x-index) index)))
-		(array/push diagonal-lines line-x)
-		(array/push diagonal-lines line-y))
-	diagonal-lines)
+						(var valid-diag-neg (and (> yidx 2) (< (+ dinc xidx) gw-max)))
+						(if valid-diag-neg
+							(array/push ndline ((grid (- yidx dinc)) (+ dinc xidx))))
+						))
+			(array/push sums (product hline))
+			(array/push sums (product vline))
+			(array/push sums (product pdline))
+			(array/push sums (product ndline))
+			)))
+	# (loop [item :in sums]
+	# 	(pp item))
+	(def res (max sums))
+	(def sums-size (length sums))
+	(def sorted-sums (sorted sums))
+	(pp (sorted-sums (dec sums-size)))
+	res)
 
 (defn solve []
 	(var grid @[])
@@ -41,18 +44,8 @@
 	(print (length grid))
 	(loop [line :in grid]
 		(pp line))
-	(var other-lines @[])
-	(array/push other-lines (get-diagonal-lines grid))
-	(print "diagonal normal lines gotten")
-	(def rotated-grid (rotate-grid grid))
-	(loop [line :in rotated-grid]
-		(pp line))
-	(array/concat grid rotated-grid)
-	(print "grids concatted")
-	(array/push other-lines (get-diagonal-lines rotated-grid))
-	(var other-lines-max (get-max-of-lines other-lines))
-	(array/concat (other-lines-max (get-max-of-lines grid)))
-	(array/concat (other-lines-max (get-max-of-lines rotated-grid)))
-	(print (max other-lines-max)))
+	(def max-sums (get-lines-of-size grid))
+	(pp max-sums))
 
-(solve)
+(defn main [&]
+	(solve))
