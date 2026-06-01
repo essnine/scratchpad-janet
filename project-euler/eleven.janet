@@ -15,13 +15,9 @@
 							(array/push hline ((grid (+ dinc yidx)) xidx)))
 						(if (< (+ dinc xidx) gw-max)
 							(array/push vline ((grid yidx) (+ dinc xidx))))
-						
-						(var valid-diag-pos (and (< (+ dinc yidx) gw-max) (< (+ dinc xidx) gw-max)))
-						(if valid-diag-pos
+						(if (and (< (+ dinc yidx) gw-max) (< (+ dinc xidx) gw-max))
 							(array/push pdline ((grid (+ dinc yidx)) (+ dinc xidx))))
-
-						(var valid-diag-neg (and (> yidx 2) (< (+ dinc xidx) gw-max)))
-						(if valid-diag-neg
+						(if (and (> yidx 2) (< (+ dinc xidx) gw-max))
 							(array/push ndline ((grid (- yidx dinc)) (+ dinc xidx))))
 						))
 			(array/push sums (product hline))
@@ -29,23 +25,23 @@
 			(array/push sums (product pdline))
 			(array/push sums (product ndline))
 			)))
-	# (loop [item :in sums]
-	# 	(pp item))
-	(def res (max sums))
+	(def max-of-sums (max-of sums))
 	(def sums-size (length sums))
 	(def sorted-sums (sorted sums))
-	(pp (sorted-sums (dec sums-size)))
-	res)
+	(def largest-in-sorted-sums (sorted-sums (dec sums-size)))
+	# (pp "DONE!")
+	# (pp (string "Largest in sorted sums is " largest-in-sorted-sums " and max-of-sums is " max-of-sums))
+	largest-in-sorted-sums)
 
 (defn solve []
+	(def start-time (os/clock))
 	(var grid @[])
 	(loop [line :in (string/split "\n" (slurp "./eleven-input.txt"))]
 		(array/push grid (map scan-number (string/split " " line))))
-	(print (length grid))
-	(loop [line :in grid]
-		(pp line))
 	(def max-sums (get-lines-of-size grid))
-	(pp max-sums))
+	(def end-time (os/clock))
+	(print (string "Result is " max-sums " and time taken to run is " (string/format "%G" (- end-time start-time))))
+	max-sums)
 
 (defn main [&]
 	(solve))
