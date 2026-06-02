@@ -36,7 +36,7 @@
 (defn solve []
 	(def start-time (os/clock))
 	(var grid @[])
-	(loop [line :in (string/split "\n" (slurp "./eleven-input.txt"))]
+	(loop [line :in (string/split "\n" (slurp "project-euler/eleven-input.txt"))]
 		(array/push grid (map scan-number (string/split " " line))))
 	(def max-sums (get-lines-of-size grid))
 	(def end-time (os/clock))
