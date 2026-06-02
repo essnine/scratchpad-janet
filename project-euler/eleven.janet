@@ -40,7 +40,7 @@
 		(array/push grid (map scan-number (string/split " " line))))
 	(def max-sums (get-lines-of-size grid))
 	(def end-time (os/clock))
-	(print (string "Result is " max-sums " and time taken to run is " (string/format "%G" (- end-time start-time))))
+	# (print (string "Result is " max-sums " and time taken to run is " (string/format "%G" (- end-time start-time))))
 	max-sums)
 
 (defn main [&]
