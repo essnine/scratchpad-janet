@@ -1,4 +1,5 @@
 (use spork)
+(import project-euler/euler-libs.janet/sieve-primes :as sieve-primes)
 
 (defn problem-nine
     `Solving for a Pythagorean triplet (a^2 + b^2 = c^2 where a < b < c and a+b+c=1000) and calculating (abc)`
@@ -18,34 +19,6 @@
     )
 )
 
-
-(defn sieve-primes 
-    [num]
-    (var primes @[])
-    (print "creating primes table...")
-    (var p-index (seq [i :range [0 num]]
-            @[i true]
-        )
-    )
-    (print "primes table ready! length is " (length p-index))
-    (loop ([k f] :in p-index)
-        (if (< k 2)
-            (print "skipping")
-            (do 
-                (if (true? f)
-                    (do
-                        # (print "current prime is " k)
-                        (array/push primes k)
-                        (loop [v :range [(* k k ) num k]]
-                            (put p-index v @[v false])
-                        )
-                    )
-                )
-            )
-        )
-    )
-    primes
-)
 
 
 (defn problem-ten
